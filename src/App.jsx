@@ -6,6 +6,7 @@ import Cart from "./pages/Cart";
 import NotFound from "./pages/NotFound";
 import Checkout from "./pages/Checkout";
 import ProductDetails from "./pages/ProductDetails";
+import Admin from "./pages/Admin";
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/products/:id" element={<ProductDetails />} />
+          <Route path="/admin" element={<Admin />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import Container from "../components/Container";
 import FormField from "../components/FormField";
 import { useAuth } from "../context/useAuth";
+import { ADMIN_EMAIL } from "../context/AuthContext";
 
 export default function Auth() {
   const navigation = useNavigate();
+  const location = useLocation();
   const [mode, setMode] = useState("login");
   const { user, login, signup, message } = useAuth();
   const {
@@ -24,7 +26,9 @@ export default function Auth() {
       isSignupSuccessful = signup(data.email, data.password, data.name);
     }
     if(isLoginSuccessful || isSignupSuccessful) {
-        navigation("/")
+      const requestedPath = location.state?.from?.pathname;
+      const isAdminLogin = mode === "login" && data.email.trim().toLowerCase() === ADMIN_EMAIL;
+      navigation(isAdminLogin ? "/admin" : requestedPath === "/admin" ? "/" : requestedPath || "/", { replace: true })
     }
   };
 
@@ -53,7 +57,7 @@ export default function Auth() {
           >
             <h1 className="text-4xl font-bold mb-4">Welcome to REBEX Shop</h1>
             <p className="text-lg mb-6">
-              Please log in or sign up to continue shopping.
+              Log in or sign up to continue. Admins can use their assigned account.
             </p>
           </Container>
 

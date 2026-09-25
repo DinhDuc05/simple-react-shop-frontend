@@ -81,14 +81,45 @@ const products = [
   }
 ];
 
+const PRODUCTS_STORAGE_KEY = "products";
+
 export function getProducts() {
-  return products;
+  try {
+    const storedProducts = JSON.parse(localStorage.getItem(PRODUCTS_STORAGE_KEY));
+    return Array.isArray(storedProducts) ? storedProducts : products;
+  } catch {
+    return products;
+  }
+}
+
+function saveProducts(updatedProducts) {
+  localStorage.setItem(PRODUCTS_STORAGE_KEY, JSON.stringify(updatedProducts));
+  return updatedProducts;
+}
+
+export function addProduct(product) {
+  const currentProducts = getProducts();
+  const newProduct = { ...product, id: Date.now() };
+  saveProducts([...currentProducts, newProduct]);
+  return newProduct;
+}
+
+export function updateProduct(productId, changes) {
+  const updatedProducts = getProducts().map((product) =>
+    product.id === productId ? { ...product, ...changes, id: productId } : product,
+  );
+  return saveProducts(updatedProducts);
+}
+
+export function deleteProduct(productId) {
+  const updatedProducts = getProducts().filter((product) => product.id !== productId);
+  return saveProducts(updatedProducts);
 }
 
 export function getProductById(id) {
-  return products.find((product) => product.id === parseInt(id));
+  return getProducts().find((product) => product.id === parseInt(id));
 }
 
 export function getProductsByCategory(category) {
-  return products.filter((product) => product.category.includes(category));
+  return getProducts().filter((product) => product.category.includes(category));
 }

@@ -34,10 +34,21 @@ export default function Checkout() {
     },
   });
 
-  const onSubmit = useCallback(() => {
+  const onSubmit = useCallback((formData) => {
+    const orders = JSON.parse(localStorage.getItem("orders") || "[]");
+    const order = {
+      id: `RB-${Date.now().toString(36).toUpperCase()}`,
+      createdAt: new Date().toISOString(),
+      customer: formData,
+      items: cartItems,
+      totalItems,
+      totalPrice,
+      status: "Pending",
+    };
+    localStorage.setItem("orders", JSON.stringify([order, ...orders]));
     clearCart();
     setIsComplete(true);
-  }, [clearCart]);
+  }, [cartItems, clearCart, totalItems, totalPrice]);
 
   useEffect(() => {
     if (!isComplete) return;
